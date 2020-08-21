@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='mac_changer',
     version='1.0.0',
-    packages=['setuptools', 'requests', 'psutil'],
+    packages=[''],
     url='https://github.com/Sahil-Poonia/mac_changer',
     license='GNU GPLv3',
     author='Sahil-Poonia',
