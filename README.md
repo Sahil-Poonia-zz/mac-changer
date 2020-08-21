@@ -1,6 +1,18 @@
 # mac_changer
 Change the mac address of network interfaces.
 
+# Installation
+make sure you are using linux and have following tools installed on your system:
+```bash
+ethtool
+ifconfig
+```
+
+Use the package manager pip to all the requirements according requirements.txt.
+```bash
+pip install -r requirements.txt
+```
+
 # Usage
 ```bash
 python3 mac_changer.py -h
