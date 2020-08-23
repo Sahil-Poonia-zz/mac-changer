@@ -37,9 +37,19 @@ def all_interfaces():
 
 
 def get_default_mac(interface):
-    cmd_output = run(['ethtool', '-P', interface], capture_output=True)
-    permanent_mac = str(cmd_output.stdout).replace("b'Permanent address: ", "").replace(r"\n'", "")
-    return permanent_mac
+    from json import loads
+    from subprocess import run
+    cmd_output = run(['ip', '-j', 'link'], capture_output=True).stdout.decode()
+    cmd_json_output = loads(cmd_output)
+    for item in cmd_json_output:
+        if item.get('ifname') == interface:
+            permanent_mac = item.get('permaddr')
+            if permanent_mac:
+                return permanent_mac
+            else:
+                return None
+    else:
+        raise Exception('wrong interface given')
 
 
 def get_vendor(mac):
@@ -69,9 +79,9 @@ def check_mac(to_mac, interface):
 
 
 def mac_changer(network_interface, to_mac):
-    run(['ifconfig', network_interface, 'down'])
-    run(['ifconfig', network_interface, 'hw', 'ether', to_mac])
-    run(['ifconfig', network_interface, 'up'])
+    run(['ip', 'link', 'set', network_interface, 'down'])
+    run(['ip', 'link', 'set', network_interface, 'address', to_mac])
+    run(['ip', 'link', 'set', network_interface, 'up'])
 
 
 class ShowInterfacesAction(Action):
@@ -103,15 +113,19 @@ class ResetInterfaceMac(Action):
             exit(1)
 
         permanent_mac = get_default_mac(reset_dev)
-        print(f"[+] changing mac address of {reset_dev} to {permanent_mac}[default]")
-        mac_changer(reset_dev, permanent_mac)
-        if check_mac(permanent_mac, reset_dev):
-            print(
-                f"[+] successfully changed the mac address of {reset_dev}")
-            exit(0)
+        if permanent_mac:
+            print(f"[+] changing mac address of {reset_dev} to {permanent_mac}[default]")
+            mac_changer(reset_dev, permanent_mac)
+            if check_mac(permanent_mac, reset_dev):
+                print(
+                    f"[+] successfully changed the mac address of {reset_dev}")
+                exit(0)
+            else:
+                print(f'[!] unable to reset {reset_dev}')
+                exit(1)
         else:
-            print(f'[!] unable to reset {reset_dev}')
-            exit(1)
+            print(f"[+] {reset_dev} is already at it's default mac")
+            exit(0)
 
 
 def main():
@@ -131,6 +145,10 @@ def main():
     if network_interface not in all_interfaces():
         print("[!] Wrong interface selected")
         exit(1)
+
+    if check_mac(to_mac, network_interface):
+        print(f"[+] mac address of {network_interface} is already {to_mac}")
+        exit(0)
 
     print(f"[+] changing mac address of {network_interface} to {to_mac}")
     mac_changer(network_interface, to_mac)
