@@ -4,8 +4,7 @@ Change the mac address of network interfaces.
 # Installation
 make sure you are using linux and have following tools installed on your system:
 ```bash
-ethtool
-ifconfig
+ip
 ```
 
 Use the package manager pip to all the requirements according requirements.txt.
@@ -26,6 +25,7 @@ python3 mac_changer.py -h
   -a                    shows all interfaces
   -r, --reset           reset the mac address of specified network interfac
 ```
+⚠️ the option 'show all interfaces' requires internet access to show their respective network interface's vendor else, it'll show an unknown vendor.
 
 ## License
 [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
