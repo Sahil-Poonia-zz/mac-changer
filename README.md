@@ -25,7 +25,7 @@ python3 mac_changer.py -h
   -a                    shows all interfaces
   -r, --reset           reset the mac address of specified network interfac
 ```
-⚠️ the option 'show all interfaces' requires internet access to show their respective network interface's vendor else, it'll show an unknown vendor.
+⚠️ the option 'show all interfaces' requires internet access to show their respective network interface's vendor. else, it'll show an unknown vendor.
 
 ## License
 [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
