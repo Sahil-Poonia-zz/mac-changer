@@ -1,4 +1,4 @@
-# mac_changer
+# mac-changer
 A simple python mac changer to change the mac address of network interfaces.
 
 # Installation
