@@ -37,19 +37,10 @@ def all_interfaces():
 
 
 def get_default_mac(interface):
-    from json import loads
     from subprocess import run
-    cmd_output = run(['ip', '-j', 'link'], capture_output=True).stdout.decode()
-    cmd_json_output = loads(cmd_output)
-    for item in cmd_json_output:
-        if item.get('ifname') == interface:
-            permanent_mac = item.get('permaddr')
-            if permanent_mac:
-                return permanent_mac
-            else:
-                return None
-    else:
-        raise Exception('wrong interface given')
+    cmd_output = run(['ethtool', '-P', interface], capture_output=True)
+    permanent_mac = str(cmd_output.stdout).replace("b'Permanent address: ", "").replace(r"\n'", "")
+    return permanent_mac
 
 
 def get_vendor(mac):
@@ -113,7 +104,7 @@ class ResetInterfaceMac(Action):
             exit(1)
 
         permanent_mac = get_default_mac(reset_dev)
-        if permanent_mac:
+        if permanent_mac != get_mac(reset_dev):
             print(f"[+] changing mac address of {reset_dev} to {permanent_mac}[default]")
             mac_changer(reset_dev, permanent_mac)
             if check_mac(permanent_mac, reset_dev):
