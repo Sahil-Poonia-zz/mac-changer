@@ -5,6 +5,7 @@ A simple python mac changer to change the mac address of network interfaces.
 make sure you are using linux and have following tool(s) installed on your system:
 ```bash
 ip
+ethtool
 ```
 
 Use the package manager pip to install all the requirements according to requirements.txt.
