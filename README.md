@@ -4,7 +4,7 @@ A simple python mac changer to change the mac address of network interfaces.
 # Installation
 make sure you are using linux and have following tool(s) installed on your system:
 ```bash
-ip
+iproute2 ( for Ubuntu / Debian ) OR iproute (for CentOS / Fedora )
 ethtool
 ```
 
